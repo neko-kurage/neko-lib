@@ -51,7 +51,7 @@ export class Emitter<T extends object> {
     const eventObservers = this.observers[eventName];
 
     if (eventObservers == undefined) {
-      throw new Error(`'${String(eventName)}' event has not been register.`);
+      throw new Error(`Event "${String(eventName)}" has not been registered.`);
     }
 
     if (scope == undefined) {
@@ -60,7 +60,10 @@ export class Emitter<T extends object> {
     }
 
     if (!eventObservers.has(scope)) {
-      throw new Error(`'${String(eventName)}' could not be delete, because it does not exist in '${scope}'`);
+      throw new Error(
+        `Cannot delete scope "${scope}" for event "${String(eventName)}".\n` +
+        `Reason: Scope "${scope}" does not exist in event "${String(eventName)}".`
+      );
     } else {
       eventObservers.delete(scope);
     }
@@ -76,7 +79,7 @@ export class Emitter<T extends object> {
     const eventObservers = this.observers[eventName];
 
     if (eventObservers == undefined) {
-      throw new Error(`'${String(eventName)}' event has not been register.`);
+      throw new Error(`Event "${String(eventName)}" has not been registered.`);
     }
 
     for (const scope of eventObservers.keys()) {
@@ -87,11 +90,11 @@ export class Emitter<T extends object> {
     }
   }
 
-  fireScope<EventName extends keyof T>(eventName: EventName, scope: object, values: T[EventName]): void {
+  fireScope<EventName extends keyof T>(eventName: EventName, values: T[EventName], scope: object): void {
     const eventObservers = this.observers[eventName];
 
     if (eventObservers == undefined) {
-      throw new Error(`'${String(eventName)}' event has not been register.`);
+      throw new Error(`Event "${String(eventName)}" has not been registered.`);
     }
 
     const event = eventObservers.get(scope);
