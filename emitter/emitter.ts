@@ -62,7 +62,7 @@ export class Emitter<T extends object> {
     if (!eventObservers.has(scope)) {
       throw new Error(
         `Cannot delete scope "${scope}" for event "${String(eventName)}".\n` +
-        `Reason: Scope "${scope}" does not exist in event "${String(eventName)}".`
+          `Reason: Scope "${scope}" does not exist in event "${String(eventName)}".`
       );
     } else {
       eventObservers.delete(scope);
@@ -82,12 +82,10 @@ export class Emitter<T extends object> {
       throw new Error(`Event "${String(eventName)}" has not been registered.`);
     }
 
-    for (const scope of eventObservers.keys()) {
-      const event = eventObservers.get(scope);
-      event!.callback.call(scope, values);
-
-      if (event!.once) this.off(eventName, scope);
-    }
+    eventObservers.forEach((event, scope) => {
+      event.callback.call(scope, values);
+      if (event.once) this.off(eventName, scope);
+    });
   }
 
   fireScope<EventName extends keyof T>(eventName: EventName, values: T[EventName], scope: object): void {
