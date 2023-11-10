@@ -96,9 +96,16 @@ export class Emitter<T extends object> {
     }
 
     const event = eventObservers.get(scope);
-    event!.callback.call(scope, values);
 
-    if (event!.once) this.off(eventName, scope);
+    if (event == undefined) {
+      throw new Error(
+        `Cannot fire scope "${scope}" for event "${String(eventName)}".\n` +
+          `Reason: Scope "${scope}" does not exist in event "${String(eventName)}".`
+      );
+    }
+
+    event.callback.call(scope, values);
+    if (event.once) this.off(eventName, scope);
   }
 
   get debugCallbacks(): Observers<T> {
